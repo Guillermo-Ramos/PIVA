@@ -7,8 +7,8 @@ from utils_final_project import NBR,dNBR, RdNBR
 # %%
 #---------------------------------------------------------Incendi de Paüls (imP) 03/06/2024------------------------------------------------------------------
 #---------------------------------------------------------Setinel pre----------------------------------------------------------------------------------------
-imP_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/incendi-pauls/SETINEL/05-09-2024/2024-05-09-00_00_2024-05-09-23_59_Sentinel-2_L2A_B8A_(Raw).tiff")
-imP_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/incendi-pauls/SETINEL/05-09-2024/2024-05-09-00_00_2024-05-09-23_59_Sentinel-2_L2A_B12_(Raw).tiff")
+imP_S_B8A_pre = io.imread("../incendi-pauls/SETINEL/05-09-2024/2024-05-09-00_00_2024-05-09-23_59_Sentinel-2_L2A_B8A_(Raw).tiff")
+imP_S_B12_pre = io.imread("../incendi-pauls/SETINEL/05-09-2024/2024-05-09-00_00_2024-05-09-23_59_Sentinel-2_L2A_B12_(Raw).tiff")
 #informació sobre les imatges
 print("Images information")
 print("L2A B8A:")
@@ -23,8 +23,8 @@ print("dim: ", imP_S_B12_pre.ndim)
 
 #%%
 #---------------------------Setinel post------------------------------------
-imP_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/incendi-pauls/SETINEL/18-6-2026/2026-06-18-00_00_2026-06-18-23_59_Sentinel-2_L2A_B8A_(Raw).tiff")
-imP_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/incendi-pauls/SETINEL/18-6-2026/2026-06-18-00_00_2026-06-18-23_59_Sentinel-2_L2A_B12_(Raw).tiff")
+imP_S_B8A_post = io.imread("../incendi-pauls/SETINEL/18-6-2026/2026-06-18-00_00_2026-06-18-23_59_Sentinel-2_L2A_B8A_(Raw).tiff")
+imP_S_B12_post = io.imread("../incendi-pauls/SETINEL/18-6-2026/2026-06-18-00_00_2026-06-18-23_59_Sentinel-2_L2A_B12_(Raw).tiff")
 #informació sobre les imatges
 print("Images information")
 print("L2A B04:")
@@ -38,14 +38,14 @@ print("dim: ", imP_S_B12_post.ndim)
 
 #%%
 #------------------LANDSAT pre and post fire-----------------------------------------
-imP_L_pre = io.imread("/Users/blancagilabertlopez/PIVA/incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_preFoc_2024-07-10.tif")
+imP_L_pre = io.imread("../incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_preFoc_2024-07-10.tif")
 print('Image information:')
 print('Pre fire')
 print('tipus: ',imP_L_pre.dtype)
 print('Forma: ',imP_L_pre.shape)
 print('Dimensions: ',imP_L_pre.ndim)
 imP_L_pre_B4, imP_L_pre_B7 = imP_L_pre[:,:,0], imP_L_pre[:,:,1]
-imP_L_post = io.imread("/Users/blancagilabertlopez/PIVA/incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_postFoc_2026-04-27.tif")
+imP_L_post = io.imread("../incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_postFoc_2026-04-27.tif")
 print('Post fire')
 print('tipus: ',imP_L_post.dtype)
 print('Forma: ',imP_L_post.shape)
@@ -120,9 +120,9 @@ plot.show()
 
 # %%
 #---------------------Landsat-----------------------------------------------
-imP_L_pre = io.imread("/Users/blancagilabertlopez/Desktop/projecte-PIVA/incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_preFoc_2024-07-10.tif")
+imP_L_pre = io.imread("../incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_preFoc_2024-07-10.tif")
 imP_L_pre_B4, imP_L_pre_B7 = imP_L_pre[:,:,0], imP_L_pre[:,:,1]
-imP_L_post = io.imread("/Users/blancagilabertlopez/Desktop/projecte-PIVA/incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_postFoc_2026-04-27.tif")
+imP_L_post = io.imread("../incendi-pauls/LANDSAT/Landsat8_B4_B7_Pauls_postFoc_2026-04-27.tif")
 imP_L_post_B4, imP_L_post_B7 = imP_L_post[:,:,0], imP_L_post[:,:,1]
 print('Informació')
 print('Pre B4')
