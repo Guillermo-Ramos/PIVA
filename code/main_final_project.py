@@ -2,6 +2,7 @@
 from skimage import io
 import matplotlib.pyplot as plot
 import numpy as np
+import pandas as pd
 from utils_final_project import NBR,dNBR, RdNBR
 
 # %%
@@ -201,3 +202,296 @@ plot.axis('off')
 plot.title('RdNBR wildfire Paüls 2025 (Landsat database)')
 plot.tight_layout()
 plot.show()
+
+
+# %%
+#-------------------------------------------------------------
+# Incendi Artesa de Segre (AS) 2022 15/06/2022-23/06/2022
+# Imatges obtingudes pre: 14-06-2021
+#                    post: 09-07-2023
+#-------------------------------------------------------------
+#Setinel
+imAS_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2021-06-14-Sentinel-2_L2A_B8A_(Raw).tiff")
+imAS_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2021-06-14-Sentinel-2_L2A_B12_(Raw).tiff")
+imAS_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2023-07-09-Sentinel-2_L2A_B8A_(Raw).tiff")
+imAS_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2023-07-09-Sentinel-2_L2A_B12_(Raw).tiff")
+
+#------NBR--------------------------------------------------
+NBR_AS_S_pre = NBR(imAS_S_B8A_pre,imAS_S_B12_pre)
+NBR_AS_S_post = NBR(imAS_S_B8A_post,imAS_S_B12_post)
+
+#-------dNBR-------------------------------------
+dNBR_AS_S = dNBR(NBR_AS_S_pre,NBR_AS_S_post)
+#-------RBR----------------------------------------
+RdNBR_AS_S = RdNBR(dNBR_AS_S, NBR_AS_S_pre)
+
+#----Resultats------------------------------------
+print(f"NBR pre min: {np.min(NBR_AS_S_pre):.4f}  max: {np.max(NBR_AS_S_pre):.4f}")
+print(f"NBR post min: {np.min(NBR_AS_S_post):.4f}  max: {np.max(NBR_AS_S_post):.4f}")
+print(f"dNBR min: {np.min(dNBR_AS_S):.4f}  max: {np.max(dNBR_AS_S):.4f}")
+print(f"RdNBR min: {np.min(RdNBR_AS_S):.4f}  max: {np.max(RdNBR_AS_S):.4f}")
+
+np.save("/Users/blancagilabertlopez/PIVA/database/artesa-2022/dNBR_AS_Setinel.npy",dNBR_AS_S)
+np.save("/Users/blancagilabertlopez/PIVA/database/artesa-2022/RdNBR_AS_Setinel.npy",RdNBR_AS_S)
+
+#---Plot------------------------------------------------------
+plot.figure(figsize=(10,10))
+plot.subplot(421)
+plot.imshow(imAS_S_B8A_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Prefire')
+plot.subplot(422)
+plot.imshow(imAS_S_B12_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Prefire')
+plot.subplot(423)
+plot.imshow(imAS_S_B8A_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Postfire')
+plot.subplot(424)
+plot.imshow(imAS_S_B12_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Postfire')
+plot.subplot(425)
+plot.imshow(NBR_AS_S_pre,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PreFire')
+plot.subplot(426)
+plot.imshow(NBR_AS_S_post,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PostFire')
+plot.subplot(427)
+plot.imshow(dNBR_AS_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title('dNBR Artesa de Segre Wildfire (2022) ')
+plot.subplot(428)
+plot.imshow(RdNBR_AS_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title('RdNBR Artesa de Segre Wildfire (2022) ')
+plot.tight_layout(h_pad=2,w_pad=1)
+plot.savefig("/Users/blancagilabertlopez/PIVA/database/artesa-2022/AS-Setinel.png",dpi=150,bbox_inches='tight')
+plot.show()
+
+
+#%%
+#--------------------------------------------
+# Incendi Paüls (P) 07/07/2025-15/07/2025 
+# SETINEL: dades obtingudes
+#          pre: 09/05/2024
+#          post: 23/06/2026
+#--------------------------------------------
+#Setinel
+imP_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2024-05-09-Sentinel-2_L2A_B8A_(Raw).tiff")
+imP_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2024-05-09-Sentinel-2_L2A_B12_(Raw).tiff")
+imP_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2026-06-23-Sentinel-2_L2A_B8A_(Raw).tiff")
+imP_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2026-06-23-Sentinel-2_L2A_B12_(Raw).tiff")
+
+#------NBR--------------------------------------------------
+NBR_P_S_pre = NBR(imP_S_B8A_pre,imP_S_B12_pre)
+NBR_P_S_post = NBR(imP_S_B8A_post,imP_S_B12_post)
+
+#-------dNBR-------------------------------------
+dNBR_P_S = dNBR(NBR_P_S_pre,NBR_P_S_post)
+#-------RBR----------------------------------------
+RdNBR_P_S = RdNBR(dNBR_P_S, NBR_P_S_pre)
+
+#----Resultats------------------------------------
+print(f"NBR pre min: {np.min(NBR_P_S_pre):.4f}  max: {np.max(NBR_P_S_pre):.4f}")
+print(f"NBR post min: {np.min(NBR_P_S_post):.4f}  max: {np.max(NBR_P_S_post):.4f}")
+print(f"dNBR min: {np.min(dNBR_P_S):.4f}  max: {np.max(dNBR_P_S):.4f}")
+print(f"RdNBR min: {np.min(RdNBR_P_S):.4f}  max: {np.max(RdNBR_P_S):.4f}")
+
+np.save("/Users/blancagilabertlopez/PIVA/database/pauls-2025/dNBR_P_Setinel.npy",dNBR_P_S)
+np.save("/Users/blancagilabertlopez/PIVA/database/pauls-2025/RdNBR_P_Setinel.npy",RdNBR_P_S)
+
+
+#---Plot------------------------------------------------------
+plot.figure(figsize=(10,10))
+plot.subplot(421)
+plot.imshow(imP_S_B8A_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Prefire')
+plot.subplot(422)
+plot.imshow(imP_S_B12_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Prefire')
+plot.subplot(423)
+plot.imshow(imP_S_B8A_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Postfire')
+plot.subplot(424)
+plot.imshow(imP_S_B12_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Postfire')
+plot.subplot(425)
+plot.imshow(NBR_P_S_pre,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PreFire')
+plot.subplot(426)
+plot.imshow(NBR_P_S_post,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PostFire')
+plot.subplot(427)
+plot.imshow(dNBR_P_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title('dNBR Paüls Wildfire (2025) ')
+plot.subplot(428)
+plot.imshow(RdNBR_P_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title('RdNBR Paüls Wildfire (2025) ')
+plot.tight_layout(h_pad=2,w_pad=1)
+plot.savefig("/Users/blancagilabertlopez/PIVA/database/pauls-2025/P-Setinel.png",dpi=150,bbox_inches='tight')
+plot.show()
+
+
+# %%
+#---------------------------------------------------
+# Incendi de la Ribera d'Ebre (RE) 26/06/2019-07/07/2019
+# dades obtingudes amb Setinel:
+#       pre: 15/06/2018
+#       post: 19/07/2020
+#---------------------------------------------------
+
+#Setinel (S)
+imRE_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2018-06-15-Sentinel-2_L2A_B8A_(Raw).tiff")
+imRE_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2018-06-15-Sentinel-2_L2A_B12_(Raw).tiff")
+imRE_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2020-07-19-Sentinel-2_L2A_B8A_(Raw).tiff")
+imRE_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2020-07-19-Sentinel-2_L2A_B12_(Raw).tiff")
+print(imRE_S_B8A_pre.shape)
+print(imRE_S_B8A_post.shape)
+
+#------NBR--------------------------------------------------
+NBR_RE_S_pre = NBR(imRE_S_B8A_pre,imRE_S_B12_pre)
+NBR_RE_S_post = NBR(imRE_S_B8A_post,imRE_S_B12_post)
+
+#-------dNBR-------------------------------------
+dNBR_RE_S = dNBR(NBR_RE_S_pre,NBR_RE_S_post)
+#-------RBR----------------------------------------
+RdNBR_RE_S = RdNBR(dNBR_RE_S, NBR_RE_S_pre)
+
+#----Resultats------------------------------------
+print(f"NBR pre min: {np.min(NBR_RE_S_pre):.4f}  max: {np.max(NBR_RE_S_pre):.4f}")
+print(f"NBR post min: {np.min(NBR_RE_S_post):.4f}  max: {np.max(NBR_RE_S_post):.4f}")
+print(f"dNBR min: {np.min(dNBR_RE_S):.4f}  max: {np.max(dNBR_RE_S):.4f}")
+print(f"RdNBR min: {np.min(RdNBR_RE_S):.4f}  max: {np.max(RdNBR_RE_S):.4f}")
+
+np.save("/Users/blancagilabertlopez/PIVA/database/ribera-2019/dNBR_RE_Setinel.npy",dNBR_RE_S)
+np.save("/Users/blancagilabertlopez/PIVA/database/ribera-2019/RdNBR_RE_Setinel.npy",RdNBR_RE_S)
+
+#---Plot------------------------------------------------------
+plot.figure(figsize=(10,10))
+plot.subplot(421)
+plot.imshow(imRE_S_B8A_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Prefire')
+plot.subplot(422)
+plot.imshow(imRE_S_B12_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Prefire')
+plot.subplot(423)
+plot.imshow(imRE_S_B8A_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Postfire')
+plot.subplot(424)
+plot.imshow(imRE_S_B12_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Postfire')
+plot.subplot(425)
+plot.imshow(NBR_RE_S_pre,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PreFire')
+plot.subplot(426)
+plot.imshow(NBR_RE_S_post,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PostFire')
+plot.subplot(427)
+plot.imshow(dNBR_RE_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title("dNBR Ribera d'Ebre Wildfire (2019) ")
+plot.subplot(428)
+plot.imshow(RdNBR_RE_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title("RdNBR Ribera d'Ebre Wildfire (2019) ")
+plot.tight_layout(h_pad=2,w_pad=1)
+plot.savefig("/Users/blancagilabertlopez/PIVA/database/ribera-2019/RE-Setinel.png",dpi=150,bbox_inches='tight')
+plot.show()
+# %%
+#---Incendi Segarra (SE) 01/07/2025-----------------------
+# Dades obtingudes amb Setinel
+#       pre: 18/06/2024
+#       post: 18/06/2026
+#---------------------------------------------------------
+
+#Setinel (S)
+imSE_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2024-06-18-Sentinel-2_L2A_B8A_(Raw).tiff")
+imSE_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2024-06-18-Sentinel-2_L2A_B12_(Raw).tiff")
+imSE_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2026-06-18-Sentinel-2_L2A_B8A_(Raw).tiff")
+imSE_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2026-06-18-Sentinel-2_L2A_B12_(Raw).tiff")
+print(imSE_S_B8A_pre.shape)
+print(imSE_S_B8A_post.shape)
+
+#------NBR--------------------------------------------------
+NBR_SE_S_pre = NBR(imSE_S_B8A_pre,imSE_S_B12_pre)
+NBR_SE_S_post = NBR(imSE_S_B8A_post,imSE_S_B12_post)
+
+#-------dNBR-------------------------------------
+dNBR_SE_S = dNBR(NBR_SE_S_pre,NBR_SE_S_post)
+#-------RBR----------------------------------------
+RdNBR_SE_S = RdNBR(dNBR_SE_S, NBR_SE_S_pre)
+
+#----Resultats------------------------------------
+print(f"NBR pre min: {np.min(NBR_SE_S_pre):.4f}  max: {np.max(NBR_SE_S_pre):.4f}")
+print(f"NBR post min: {np.min(NBR_SE_S_post):.4f}  max: {np.max(NBR_SE_S_post):.4f}")
+print(f"dNBR min: {np.min(dNBR_SE_S):.4f}  max: {np.max(dNBR_SE_S):.4f}")
+print(f"RdNBR min: {np.min(RdNBR_SE_S):.4f}  max: {np.max(RdNBR_SE_S):.4f}")
+
+np.save("/Users/blancagilabertlopez/PIVA/database/segarra-2025/dNBR_SE_Setinel.npy",dNBR_SE_S)
+np.save("/Users/blancagilabertlopez/PIVA/database/segarra-2025/RdNBR_SE_Setinel.npy",RdNBR_SE_S)
+
+
+#---Plot------------------------------------------------------
+plot.figure(figsize=(10,10))
+plot.subplot(421)
+plot.imshow(imSE_S_B8A_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Prefire')
+plot.subplot(422)
+plot.imshow(imSE_S_B12_pre,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Prefire')
+plot.subplot(423)
+plot.imshow(imSE_S_B8A_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B8A - Postfire')
+plot.subplot(424)
+plot.imshow(imSE_S_B12_post,cmap='gray')
+plot.axis('off')
+plot.title('Setinel B12 - Postfire')
+plot.subplot(425)
+plot.imshow(NBR_SE_S_pre,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PreFire')
+plot.subplot(426)
+plot.imshow(NBR_SE_S_post,cmap='gray',vmin=-1,vmax=1)
+plot.axis('off')
+plot.title('NBR - PostFire')
+plot.subplot(427)
+plot.imshow(dNBR_SE_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title("dNBR Torrefeta (La Segarra) Wildfire (2025) ")
+plot.subplot(428)
+plot.imshow(RdNBR_SE_S,cmap='RdYlGn_r',vmin=-0.5,vmax=1.3)
+plot.colorbar()
+plot.axis('off')
+plot.title("RdNBR Torrefeta (La Segarra) Wildfire (2025) ")
+plot.tight_layout(h_pad=2,w_pad=1)
+plot.savefig("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SE-Setinel.png",dpi=150,bbox_inches='tight')
+plot.show()
+# %%
