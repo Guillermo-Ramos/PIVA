@@ -14,24 +14,15 @@ def NBR(NIRband,SWIRband):
     SWIRband = SWIRband
     return (NIRband-SWIRband)/(NIRband+SWIRband)
 
-def dNBR(prefire,postfire,params):
+def dNBR(prefire,postfire):
     '''Calculation of the severity level
     **input**
     1) prefire: NBR of prefire image
     2) postfire: NBR of postfire image
     **output**
       '''
-    dNBR_raw = prefire - postfire
-    r,c = slice(params[0][0],params[0][1]), slice(params[1][0],params[1][1])
-    window = dNBR_raw[r,c]
+    return prefire-postfire
 
-    if window.size == 0 or np.all(np.isnan(window)):
-        offset=0.0
-    else:
-        offset = np.nanmean(window)
-    
-    dNBR_thrs = ((prefire-postfire)*1000)-offset
-    return dNBR_thrs
 
 def RdNBR(dNBR, NBR_prefire):
     return dNBR/(np.abs(NBR_prefire)+0.001)**0.5
