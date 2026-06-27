@@ -3,7 +3,9 @@ from skimage import io
 import matplotlib.pyplot as plot
 import numpy as np
 import pandas as pd
-from utils_final_project import NBR,dNBR, RdNBR
+from sklearn.cluster import KMeans
+from sklearn.utils import shuffle
+from utils_final_project import NBR,dNBR, RdNBR, Kmeans_segmentation
 
 # %%
 #---------------------------------------------------------Incendi de Paüls (imP) 03/06/2024------------------------------------------------------------------
@@ -211,10 +213,10 @@ plot.show()
 #                    post: 09-07-2023
 #-------------------------------------------------------------
 #Setinel
-imAS_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2021-06-14-Sentinel-2_L2A_B8A_(Raw).tiff")
-imAS_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2021-06-14-Sentinel-2_L2A_B12_(Raw).tiff")
-imAS_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2023-07-09-Sentinel-2_L2A_B8A_(Raw).tiff")
-imAS_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/artesa-2022/SETINEL/2023-07-09-Sentinel-2_L2A_B12_(Raw).tiff")
+imAS_S_B8A_pre = io.imread("../database/artesa-2022/SETINEL/2021-06-14-Sentinel-2_L2A_B8A_(Raw).tiff")
+imAS_S_B12_pre = io.imread("../database/artesa-2022/SETINEL/2021-06-14-Sentinel-2_L2A_B12_(Raw).tiff")
+imAS_S_B8A_post = io.imread("../database/artesa-2022/SETINEL/2023-07-09-Sentinel-2_L2A_B8A_(Raw).tiff")
+imAS_S_B12_post = io.imread("../database/artesa-2022/SETINEL/2023-07-09-Sentinel-2_L2A_B12_(Raw).tiff")
 
 #------NBR--------------------------------------------------
 NBR_AS_S_pre = NBR(imAS_S_B8A_pre,imAS_S_B12_pre)
@@ -225,14 +227,33 @@ dNBR_AS_S = dNBR(NBR_AS_S_pre,NBR_AS_S_post)
 #-------RBR----------------------------------------
 RdNBR_AS_S = RdNBR(dNBR_AS_S, NBR_AS_S_pre)
 
+
+#------K-Means------------------------------------
+im_AS_S_RdNBR_Kmeans = Kmeans_segmentation(RdNBR_AS_S,0.3, 0.6)
+im_AS_S_dNBR_Kmeans = Kmeans_segmentation(dNBR_AS_S,0.3, 0.6)
+
+plot.figure(figsize=(10,10))
+plot.subplot(121)
+plot.imshow(im_AS_S_dNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using dNBR Artesa de Segre wildfire (2022)")
+plot.subplot(122)
+plot.imshow(im_AS_S_RdNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using RdNBR Artesa de Segre wildfire (2025)")
+plot.tight_layout()
+plot.show()
+
+
 #----Resultats------------------------------------
 print(f"NBR pre min: {np.min(NBR_AS_S_pre):.4f}  max: {np.max(NBR_AS_S_pre):.4f}")
 print(f"NBR post min: {np.min(NBR_AS_S_post):.4f}  max: {np.max(NBR_AS_S_post):.4f}")
 print(f"dNBR min: {np.min(dNBR_AS_S):.4f}  max: {np.max(dNBR_AS_S):.4f}")
 print(f"RdNBR min: {np.min(RdNBR_AS_S):.4f}  max: {np.max(RdNBR_AS_S):.4f}")
 
-np.save("/Users/blancagilabertlopez/PIVA/database/artesa-2022/dNBR_AS_Setinel.npy",dNBR_AS_S)
-np.save("/Users/blancagilabertlopez/PIVA/database/artesa-2022/RdNBR_AS_Setinel.npy",RdNBR_AS_S)
+np.save("../database/artesa-2022/dNBR_AS_Setinel.npy",dNBR_AS_S)
+np.save("../database/artesa-2022/RdNBR_AS_Setinel.npy",RdNBR_AS_S)
+
 
 #---Plot------------------------------------------------------
 plot.figure(figsize=(10,10))
@@ -271,7 +292,7 @@ plot.colorbar()
 plot.axis('off')
 plot.title('RdNBR Artesa de Segre Wildfire (2022) ')
 plot.tight_layout(h_pad=2,w_pad=1)
-plot.savefig("/Users/blancagilabertlopez/PIVA/database/artesa-2022/AS-Setinel.png",dpi=150,bbox_inches='tight')
+plot.savefig("../artesa-2022/AS-Setinel.png",dpi=150,bbox_inches='tight')
 plot.show()
 
 
@@ -283,10 +304,10 @@ plot.show()
 #          post: 23/06/2026
 #--------------------------------------------
 #Setinel
-imP_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2024-05-09-Sentinel-2_L2A_B8A_(Raw).tiff")
-imP_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2024-05-09-Sentinel-2_L2A_B12_(Raw).tiff")
-imP_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2026-06-23-Sentinel-2_L2A_B8A_(Raw).tiff")
-imP_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/pauls-2025/Setinel/2026-06-23-Sentinel-2_L2A_B12_(Raw).tiff")
+imP_S_B8A_pre = io.imread("../pauls-2025/Setinel/2024-05-09-Sentinel-2_L2A_B8A_(Raw).tiff")
+imP_S_B12_pre = io.imread("../pauls-2025/Setinel/2024-05-09-Sentinel-2_L2A_B12_(Raw).tiff")
+imP_S_B8A_post = io.imread("../pauls-2025/Setinel/2026-06-23-Sentinel-2_L2A_B8A_(Raw).tiff")
+imP_S_B12_post = io.imread("../pauls-2025/Setinel/2026-06-23-Sentinel-2_L2A_B12_(Raw).tiff")
 
 #------NBR--------------------------------------------------
 NBR_P_S_pre = NBR(imP_S_B8A_pre,imP_S_B12_pre)
@@ -296,6 +317,23 @@ NBR_P_S_post = NBR(imP_S_B8A_post,imP_S_B12_post)
 dNBR_P_S = dNBR(NBR_P_S_pre,NBR_P_S_post)
 #-------RBR----------------------------------------
 RdNBR_P_S = RdNBR(dNBR_P_S, NBR_P_S_pre)
+print(RdNBR_P_S.shape)
+
+#------K-Means------------------------------------
+im_P_S_RdNBR_Kmeans = Kmeans_segmentation(RdNBR_P_S,0.4, 2)
+im_P_S_dNBR_Kmeans = Kmeans_segmentation(dNBR_P_S,0.3, 2)
+
+plot.figure(figsize=(10,10))
+plot.subplot(121)
+plot.imshow(im_P_S_dNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using dNBR Paüls wildfire (2025)")
+plot.subplot(122)
+plot.imshow(im_P_S_RdNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using RdNBR Paüls wildfire (2025)")
+plot.tight_layout()
+plot.show()
 
 #----Resultats------------------------------------
 print(f"NBR pre min: {np.min(NBR_P_S_pre):.4f}  max: {np.max(NBR_P_S_pre):.4f}")
@@ -303,8 +341,8 @@ print(f"NBR post min: {np.min(NBR_P_S_post):.4f}  max: {np.max(NBR_P_S_post):.4f
 print(f"dNBR min: {np.min(dNBR_P_S):.4f}  max: {np.max(dNBR_P_S):.4f}")
 print(f"RdNBR min: {np.min(RdNBR_P_S):.4f}  max: {np.max(RdNBR_P_S):.4f}")
 
-np.save("/Users/blancagilabertlopez/PIVA/database/pauls-2025/dNBR_P_Setinel.npy",dNBR_P_S)
-np.save("/Users/blancagilabertlopez/PIVA/database/pauls-2025/RdNBR_P_Setinel.npy",RdNBR_P_S)
+np.save("../pauls-2025/dNBR_P_Setinel.npy",dNBR_P_S)
+np.save("../pauls-2025/RdNBR_P_Setinel.npy",RdNBR_P_S)
 
 
 #---Plot------------------------------------------------------
@@ -344,7 +382,7 @@ plot.colorbar()
 plot.axis('off')
 plot.title('RdNBR Paüls Wildfire (2025) ')
 plot.tight_layout(h_pad=2,w_pad=1)
-plot.savefig("/Users/blancagilabertlopez/PIVA/database/pauls-2025/P-Setinel.png",dpi=150,bbox_inches='tight')
+plot.savefig("../pauls-2025/P-Setinel.png",dpi=150,bbox_inches='tight')
 plot.show()
 
 
@@ -357,10 +395,10 @@ plot.show()
 #---------------------------------------------------
 
 #Setinel (S)
-imRE_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2018-06-15-Sentinel-2_L2A_B8A_(Raw).tiff")
-imRE_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2018-06-15-Sentinel-2_L2A_B12_(Raw).tiff")
-imRE_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2020-07-19-Sentinel-2_L2A_B8A_(Raw).tiff")
-imRE_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/ribera-2019/SETINEL/2020-07-19-Sentinel-2_L2A_B12_(Raw).tiff")
+imRE_S_B8A_pre = io.imread("../database/ribera-2019/SETINEL/2018-06-15-Sentinel-2_L2A_B8A_(Raw).tiff")
+imRE_S_B12_pre = io.imread("../database/ribera-2019/SETINEL/2018-06-15-Sentinel-2_L2A_B12_(Raw).tiff")
+imRE_S_B8A_post = io.imread("../database/ribera-2019/SETINEL/2020-07-19-Sentinel-2_L2A_B8A_(Raw).tiff")
+imRE_S_B12_post = io.imread("../database/ribera-2019/SETINEL/2020-07-19-Sentinel-2_L2A_B12_(Raw).tiff")
 print(imRE_S_B8A_pre.shape)
 print(imRE_S_B8A_post.shape)
 
@@ -373,14 +411,30 @@ dNBR_RE_S = dNBR(NBR_RE_S_pre,NBR_RE_S_post)
 #-------RBR----------------------------------------
 RdNBR_RE_S = RdNBR(dNBR_RE_S, NBR_RE_S_pre)
 
+#------K-Means------------------------------------
+im_RE_S_RdNBR_Kmeans = Kmeans_segmentation(RdNBR_RE_S,0.3, 2)
+im_RE_S_dNBR_Kmeans = Kmeans_segmentation(dNBR_RE_S,0.3, 2)
+
+plot.figure(figsize=(10,10))
+plot.subplot(121)
+plot.imshow(im_RE_S_dNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using dNBR Ribera d'Ebre wildfire (2019)")
+plot.subplot(122)
+plot.imshow(im_RE_S_RdNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using RdNBR Ribera d'Ebre wildfire (2019)")
+plot.tight_layout()
+plot.show()
+
 #----Resultats------------------------------------
 print(f"NBR pre min: {np.min(NBR_RE_S_pre):.4f}  max: {np.max(NBR_RE_S_pre):.4f}")
 print(f"NBR post min: {np.min(NBR_RE_S_post):.4f}  max: {np.max(NBR_RE_S_post):.4f}")
 print(f"dNBR min: {np.min(dNBR_RE_S):.4f}  max: {np.max(dNBR_RE_S):.4f}")
 print(f"RdNBR min: {np.min(RdNBR_RE_S):.4f}  max: {np.max(RdNBR_RE_S):.4f}")
 
-np.save("/Users/blancagilabertlopez/PIVA/database/ribera-2019/dNBR_RE_Setinel.npy",dNBR_RE_S)
-np.save("/Users/blancagilabertlopez/PIVA/database/ribera-2019/RdNBR_RE_Setinel.npy",RdNBR_RE_S)
+np.save("../database/ribera-2019/dNBR_RE_Setinel.npy",dNBR_RE_S)
+np.save("../database/ribera-2019/RdNBR_RE_Setinel.npy",RdNBR_RE_S)
 
 #---Plot------------------------------------------------------
 plot.figure(figsize=(10,10))
@@ -419,7 +473,7 @@ plot.colorbar()
 plot.axis('off')
 plot.title("RdNBR Ribera d'Ebre Wildfire (2019) ")
 plot.tight_layout(h_pad=2,w_pad=1)
-plot.savefig("/Users/blancagilabertlopez/PIVA/database/ribera-2019/RE-Setinel.png",dpi=150,bbox_inches='tight')
+plot.savefig("../database/ribera-2019/RE-Setinel.png",dpi=150,bbox_inches='tight')
 plot.show()
 # %%
 #---Incendi Segarra (SE) 01/07/2025-----------------------
@@ -429,10 +483,10 @@ plot.show()
 #---------------------------------------------------------
 
 #Setinel (S)
-imSE_S_B8A_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2024-06-18-Sentinel-2_L2A_B8A_(Raw).tiff")
-imSE_S_B12_pre = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2024-06-18-Sentinel-2_L2A_B12_(Raw).tiff")
-imSE_S_B8A_post = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2026-06-18-Sentinel-2_L2A_B8A_(Raw).tiff")
-imSE_S_B12_post = io.imread("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SETINEL/2026-06-18-Sentinel-2_L2A_B12_(Raw).tiff")
+imSE_S_B8A_pre = io.imread("../database/segarra-2025/SETINEL/2024-06-18-Sentinel-2_L2A_B8A_(Raw).tiff")
+imSE_S_B12_pre = io.imread("../database/segarra-2025/SETINEL/2024-06-18-Sentinel-2_L2A_B12_(Raw).tiff")
+imSE_S_B8A_post = io.imread("../database/segarra-2025/SETINEL/2026-06-18-Sentinel-2_L2A_B8A_(Raw).tiff")
+imSE_S_B12_post = io.imread("../database/segarra-2025/SETINEL/2026-06-18-Sentinel-2_L2A_B12_(Raw).tiff")
 print(imSE_S_B8A_pre.shape)
 print(imSE_S_B8A_post.shape)
 
@@ -445,14 +499,30 @@ dNBR_SE_S = dNBR(NBR_SE_S_pre,NBR_SE_S_post)
 #-------RBR----------------------------------------
 RdNBR_SE_S = RdNBR(dNBR_SE_S, NBR_SE_S_pre)
 
+#------K-Means------------------------------------
+im_SE_S_RdNBR_Kmeans = Kmeans_segmentation(RdNBR_SE_S,0.2, 0.5)
+im_SE_S_dNBR_Kmeans = Kmeans_segmentation(dNBR_SE_S,0.2, 0.5)
+
+plot.figure(figsize=(10,10))
+plot.subplot(121)
+plot.imshow(im_SE_S_dNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using dNBR Segarra wildfire (2025)")
+plot.subplot(122)
+plot.imshow(im_SE_S_RdNBR_Kmeans, cmap='RdYlGn_r')
+plot.axis('off')
+plot.title("K-Means using RdNBR Segarra wildfire (2025)")
+plot.tight_layout()
+plot.show()
+
 #----Resultats------------------------------------
 print(f"NBR pre min: {np.min(NBR_SE_S_pre):.4f}  max: {np.max(NBR_SE_S_pre):.4f}")
 print(f"NBR post min: {np.min(NBR_SE_S_post):.4f}  max: {np.max(NBR_SE_S_post):.4f}")
 print(f"dNBR min: {np.min(dNBR_SE_S):.4f}  max: {np.max(dNBR_SE_S):.4f}")
 print(f"RdNBR min: {np.min(RdNBR_SE_S):.4f}  max: {np.max(RdNBR_SE_S):.4f}")
 
-np.save("/Users/blancagilabertlopez/PIVA/database/segarra-2025/dNBR_SE_Setinel.npy",dNBR_SE_S)
-np.save("/Users/blancagilabertlopez/PIVA/database/segarra-2025/RdNBR_SE_Setinel.npy",RdNBR_SE_S)
+np.save("../database/segarra-2025/dNBR_SE_Setinel.npy",dNBR_SE_S)
+np.save("../database/segarra-2025/RdNBR_SE_Setinel.npy",RdNBR_SE_S)
 
 
 #---Plot------------------------------------------------------
@@ -492,6 +562,6 @@ plot.colorbar()
 plot.axis('off')
 plot.title("RdNBR Torrefeta (La Segarra) Wildfire (2025) ")
 plot.tight_layout(h_pad=2,w_pad=1)
-plot.savefig("/Users/blancagilabertlopez/PIVA/database/segarra-2025/SE-Setinel.png",dpi=150,bbox_inches='tight')
+plot.savefig("../database/segarra-2025/SE-Setinel.png",dpi=150,bbox_inches='tight')
 plot.show()
 # %%
